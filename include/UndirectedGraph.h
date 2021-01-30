@@ -2,6 +2,7 @@
 #define SHORELINE_UNDIRECTEDGRAPH_H
 
 #include <vector>
+#include <map>
 #include "Edge.h"
 
 class UndirectedGraph
@@ -9,6 +10,7 @@ class UndirectedGraph
 private:
     std::vector<Vertex> m_vertices;
     std::vector<Edge> m_edges;
+    std::map<Vertex, std::vector<Vertex>> m_adjacencyList;
 
 public:
 
@@ -68,6 +70,12 @@ public:
      * @return
      */
     bool addVertex(const Vertex& vertex);
+
+    /**
+     *
+     * @return
+     */
+    std::map<Vertex, std::vector<Vertex>> getAdjacencyList();
 
     /**
      *
