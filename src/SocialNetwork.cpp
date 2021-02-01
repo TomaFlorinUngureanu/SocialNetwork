@@ -111,7 +111,7 @@ bool SocialNetwork::breadthFirstSearch(const SocialNetworkUser &source, const So
 
 std::map<SocialNetworkUser, std::vector<SocialNetworkUser>> SocialNetwork::getFriendships()
 {
-    return std::map<SocialNetworkUser, std::vector<SocialNetworkUser>>();
+    return m_friendsList;
 }
 
 std::vector<SocialNetworkUser> SocialNetwork::getPath(const SocialNetworkUser &source, const SocialNetworkUser &destination,

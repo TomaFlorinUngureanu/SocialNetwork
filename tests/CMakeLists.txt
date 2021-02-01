@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
-set(CMAKE_CXX_STANDARD 20)
-project(SHORELINE_TESTS)
+project(TESTS)
 
 add_subdirectory(lib/googletest)
 
@@ -14,23 +13,29 @@ include_directories(${gtest_SOURCE_DIR}/include
                     ../src
 )
 
-add_executable( EdgeTests
-        ../src/abstraction/Vertex.cpp
+set(PROJECT_SOURCES ../src/abstraction/Vertex.cpp
+                    ../src/abstraction/Edge.cpp
+                    ../src/SocialNetworkUser.cpp
+                    ../src/Friendship.cpp
+                    ../src/SocialNetwork.cpp)
+
+add_executable( FriendshipTests
+                ${PROJECT_SOURCES}
         unit-tests/test_Friendship.cpp
 )
 
-add_executable( VertexTests
+add_executable( SocialNetworkUserTests
+                ${PROJECT_SOURCES}
         unit-tests/test_SocialNetworkUser.cpp
 )
 
-add_executable( UndirectedGraphTests
-                unit-tests/
+add_executable( SocialNetworkTests
+                ${PROJECT_SOURCES}
         unit-tests/test_SocialNetwork.cpp
-                mocks/stubs/MockUndirectedGraph.cpp
-                mocks/include/MockUndirectedGraph.h)
+)
 
-target_link_libraries(EdgeTests gtest gmock gtest_main gmock_main)
-target_link_libraries(VertexTests gtest gmock gtest_main gmock_main)
-target_link_libraries(UndirectedGraphTests gtest gmock gtest_main gmock_main)
+target_link_libraries(FriendshipTests gtest gmock gtest_main gmock_main)
+target_link_libraries(SocialNetworkUserTests gtest gmock gtest_main gmock_main)
+target_link_libraries(SocialNetworkTests gtest gmock gtest_main gmock_main)
 
-add_test(tests EdgeTests VertexTests UndirectedGraphTests)
+add_test(TESTS FriendshipTests SocialNetworkUserTests SocialNetworkTests)

@@ -1,5 +1,5 @@
-#ifndef SHORELINE_SOCIALNETWORKUSER_H
-#define SHORELINE_SOCIALNETWORKUSER_H
+#ifndef SOCIALNETWORKUSER_H
+#define SOCIALNETWORKUSER_H
 
 // project class headers
 #include "abstraction/Vertex.h"
@@ -32,4 +32,4 @@ public:
     void setUsername(const std::string &userName) override;
 };
 
-#endif //SHORELINE_SOCIALNETWORKUSER_H
+#endif //SOCIALNETWORKUSER_H

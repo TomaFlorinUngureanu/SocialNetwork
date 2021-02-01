@@ -1,5 +1,5 @@
-#ifndef SHORELINE_EDGE_H
-#define SHORELINE_EDGE_H
+#ifndef EDGE_H
+#define EDGE_H
 
 // project class headers
 #include "SocialNetworkUser.h"
@@ -30,4 +30,4 @@ public:
     [[nodiscard]] virtual SocialNetworkUser getUser1() const = 0;
 };
 
-#endif //SHORELINE_EDGE_H
+#endif //EDGE_H

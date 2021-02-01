@@ -1,5 +1,5 @@
-#ifndef SHORELINE_UNDIRECTEDGRAPH_H
-#define SHORELINE_UNDIRECTEDGRAPH_H
+#ifndef UNDIRECTEDGRAPH_H
+#define UNDIRECTEDGRAPH_H
 
 // project class headers
 #include "Friendship.h"
@@ -35,4 +35,4 @@ protected:
     virtual bool removeUser(const SocialNetworkUser& socialNetworkUser) = 0;
 };
 
-#endif //SHORELINE_UNDIRECTEDGRAPH_H
+#endif //UNDIRECTEDGRAPH_H

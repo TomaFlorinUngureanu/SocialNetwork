@@ -1,5 +1,5 @@
-#ifndef SHORELINE_SOCIALNETWORKEXCEPTION_H
-#define SHORELINE_SOCIALNETWORKEXCEPTION_H
+#ifndef SOCIALNETWORKEXCEPTION_H
+#define SOCIALNETWORKEXCEPTION_H
 
 #include <exception>
 
@@ -12,4 +12,4 @@ class SocialNetworkException : public std::exception
 };
 
 
-#endif //SHORELINE_SOCIALNETWORKEXCEPTION_H
+#endif //SOCIALNETWORKEXCEPTION_H

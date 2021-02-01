@@ -1,5 +1,5 @@
-#ifndef SHORELINE_VERTEX_H
-#define SHORELINE_VERTEX_H
+#ifndef VERTEX_H
+#define VERTEX_H
 
 // other used libraries
 #include <string>
@@ -30,4 +30,4 @@ public:
     [[nodiscard]] virtual std::string getUsername() const = 0;
 };
 
-#endif //SHORELINE_VERTEX_H
+#endif //VERTEX_H

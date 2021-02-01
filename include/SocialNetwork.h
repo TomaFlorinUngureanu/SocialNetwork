@@ -1,5 +1,5 @@
-#ifndef SHORELINE_SOCIALNETWORK_H
-#define SHORELINE_SOCIALNETWORK_H
+#ifndef SOCIALNETWORK_H
+#define SOCIALNETWORK_H
 
 // project class headers
 #include "abstraction/UndirectedGraph.h"
@@ -51,4 +51,4 @@ public:
     bool removeUser(const SocialNetworkUser &vertex) override;
 };
 
-#endif //SHORELINE_SOCIALNETWORK_H
+#endif //SOCIALNETWORK_H

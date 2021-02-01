@@ -1,5 +1,5 @@
-#ifndef SHORELINE_FRIENDSHIP_H
-#define SHORELINE_FRIENDSHIP_H
+#ifndef FRIENDSHIP_H
+#define FRIENDSHIP_H
 
 // project class headers
 #include "SocialNetworkUser.h"
@@ -38,4 +38,4 @@ public:
     void setUser(const SocialNetworkUser& socialNetworkUser, bool position) override;
 };
 
-#endif //SHORELINE_FRIENDSHIP_H
+#endif //FRIENDSHIP_H
