@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
-project(UnidrectedGraph)
+project(SHORELINE)
 
 set(CMAKE_CXX_STANDARD 20)
 include_directories(include src)
-add_executable(UnidrectedGraph src/Edge.cpp src/UndirectedGraph.cpp src/Vertex.cpp main.cpp)
+set(SOURCES src/abstraction/Edge.cpp src/abstraction/Vertex.cpp main.cpp src/SocialNetwork.cpp include/SocialNetwork.h src/SocialNetworkUser.cpp include/SocialNetworkUser.h src/Friendship.cpp include/Friendship.h)
+add_executable(SHORELINE ${SOURCES})
