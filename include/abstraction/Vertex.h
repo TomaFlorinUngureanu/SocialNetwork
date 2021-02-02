@@ -8,25 +8,21 @@
 
 class Vertex
 {
-protected:
-    // Members
-    std::string m_username;
-
+public:
     // Constructors
     Vertex() = default;
     Vertex(const Vertex& vertex) = default;
-    Vertex(Vertex&& vertex) noexcept;
+    Vertex(Vertex&& vertex) noexcept = default;
 
     // Destructor
     virtual ~Vertex() = 0;
 
     // Copy and Move assignment operators
-    Vertex &operator=(const Vertex &socialNetworkUser) = default;
-    Vertex &operator=(Vertex &&socialNetworkUser) noexcept;
+    Vertex &operator=(const Vertex &vertex) = default;
+    Vertex &operator=(Vertex &&vertex) noexcept = default;
+    bool operator==(Vertex& vertex) const;
 
-    virtual void setUsername(const std::string& label) = 0;
-
-public:
+    virtual void setUsername(const std::string& username) = 0;
     [[nodiscard]] virtual std::string getUsername() const = 0;
 };
 

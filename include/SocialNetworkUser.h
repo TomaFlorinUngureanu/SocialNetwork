@@ -9,6 +9,9 @@
 
 class SocialNetworkUser : public Vertex
 {
+private:
+    // Members
+    std::string m_username;
 public:
     // Constructors
     SocialNetworkUser() = default;

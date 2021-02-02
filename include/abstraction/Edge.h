@@ -9,11 +9,14 @@
 
 class Edge
 {
-protected:
+public:
     // Constructors
     Edge() = default;
     Edge(const Edge &edge) = default;
     Edge(Edge &&edge) noexcept = default;
+
+    Edge(Vertex* vertex) = delete;
+    Edge(std::shared_ptr<Vertex> vertex) = delete;
 
     // Destructor
     virtual ~Edge() = 0;
@@ -21,13 +24,12 @@ protected:
     // Copy and Move assignment operators
     Edge &operator=(const Edge &edge) = default;
     Edge &operator=(Edge &&edge) noexcept = default;
+    bool operator==(Edge &edge);
 
-    virtual void setUser(const SocialNetworkUser& socialNetworkUser, bool position) = 0;
+    virtual void setUser(const std::shared_ptr<Vertex> &socialNetworkUser, bool position) = 0;
 
-public:
-    Edge(Vertex* vertex) = delete;
-    [[nodiscard]] virtual SocialNetworkUser getUser2() const = 0;
-    [[nodiscard]] virtual SocialNetworkUser getUser1() const = 0;
+    [[nodiscard]] virtual std::shared_ptr<Vertex> getUser2() = 0;
+    [[nodiscard]] virtual std::shared_ptr<Vertex> getUser1() = 0;
 };
 
 #endif //EDGE_H

@@ -8,34 +8,46 @@
 // other used libraries
 #include "memory"
 
-class Friendship: public Edge
+class Friendship : public Edge
 {
 private:
+
     // Members
-    SocialNetworkUser m_user1{};
-    SocialNetworkUser m_user2{};
+    std::shared_ptr<Vertex> m_user1{};
+    std::shared_ptr<Vertex> m_user2{};
 
 public:
     // Constructors
-    Friendship() = default;
-    Friendship(SocialNetworkUser vertex) = delete;
+    Friendship();
+
     Friendship(Friendship &&friendship) noexcept;
+    Friendship(const SocialNetworkUser& user1, const SocialNetworkUser& user2);
     Friendship(const Friendship &friendship);
-    Friendship(const SocialNetworkUser &socialNetworkUser1, const SocialNetworkUser &socialNetworkUser2);
+    Friendship(Vertex *user1, Vertex *user2);
+    Friendship(const std::shared_ptr<Vertex> &user1, const std::shared_ptr<Vertex> &user2);
+    Friendship(std::shared_ptr<Vertex> &&user1, std::shared_ptr<Vertex> &&user2);
+
+    Friendship(const std::shared_ptr<Vertex> &user1, Vertex *user2) = delete;
+    Friendship(Vertex *user2, const std::shared_ptr<Vertex> &user1) = delete;
+    Friendship(Vertex *user) = delete;
+    Friendship(Vertex *&user) = delete;
+    Friendship(const Vertex *user) = delete;
+    Friendship(const Vertex *&user) = delete;
+    Friendship(const std::shared_ptr<Vertex> &user) = delete;
+    Friendship(std::shared_ptr<Vertex> &user) = delete;
+    Friendship(std::shared_ptr<Vertex> user) = delete;
 
     // Destructor
     ~Friendship() override = default;
 
     // Copy and Move assignment operators
-    Friendship &operator=(const Friendship &edge) = delete;
+    Friendship &operator=(const Friendship &friendship) = delete;
     Friendship &operator=(Friendship &&friendship) noexcept;
 
     // Other operators
-    bool operator==(const Friendship &edge);
-
-    [[nodiscard]] SocialNetworkUser getUser1() const override;
-    [[nodiscard]] SocialNetworkUser getUser2() const override;
-    void setUser(const SocialNetworkUser& socialNetworkUser, bool position) override;
+    [[nodiscard]] std::shared_ptr<Vertex> getUser1() override;
+    [[nodiscard]] std::shared_ptr<Vertex> getUser2() override;
+    void setUser(const std::shared_ptr<Vertex> &socialNetworkUser, bool position) override;
 };
 
 #endif //FRIENDSHIP_H

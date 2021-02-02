@@ -1,12 +1,6 @@
 #include <exception/SocialNetworkException.h>
 #include "Friendship.h"
 
-Friendship::Friendship(const SocialNetworkUser &socialNetworkUser1, const SocialNetworkUser &socialNetworkUser2)
-{
-    m_user1 = socialNetworkUser1;
-    m_user2 = socialNetworkUser2;
-}
-
 Friendship::Friendship(Friendship &&friendship) noexcept
 {
     *this = std::move(friendship);
@@ -25,24 +19,19 @@ Friendship &Friendship::operator=(Friendship &&friendship) noexcept
     return *this;
 }
 
-bool Friendship::operator==(const Friendship &edge)
-{
-    return false;
-}
-
-SocialNetworkUser Friendship::getUser1() const
+std::shared_ptr<Vertex> Friendship::getUser1()
 {
     return m_user1;
 }
 
-SocialNetworkUser Friendship::getUser2() const
+std::shared_ptr<Vertex> Friendship::getUser2()
 {
     return m_user2;
 }
 
-void Friendship::setUser(const SocialNetworkUser& socialNetworkUser, bool position)
+void Friendship::setUser(const std::shared_ptr<Vertex> &socialNetworkUser, bool position)
 {
-    if (!socialNetworkUser.getUsername().empty() && !socialNetworkUser.getUsername().empty() && m_user2 == m_user1)
+    if (!socialNetworkUser->getUsername().empty() && !socialNetworkUser->getUsername().empty() && m_user2 == m_user1)
     {
         throw SocialNetworkException();
     }
@@ -54,4 +43,34 @@ void Friendship::setUser(const SocialNetworkUser& socialNetworkUser, bool positi
     {
         m_user2 = socialNetworkUser;
     }
+}
+
+Friendship::Friendship()
+{
+    m_user1 = std::shared_ptr<Vertex>(new SocialNetworkUser());
+    m_user2 = std::shared_ptr<Vertex>(new SocialNetworkUser());
+}
+
+Friendship::Friendship(const std::shared_ptr<Vertex> &socialNetworkUser1, const std::shared_ptr<Vertex> &socialNetworkUser2)
+{
+    m_user1 = socialNetworkUser1;
+    m_user2 = socialNetworkUser2;
+}
+
+Friendship::Friendship(std::shared_ptr<Vertex> &&socialNetworkUser1, std::shared_ptr<Vertex> &&socialNetworkUser2)
+{
+    m_user1 = std::move(socialNetworkUser1);
+    m_user2 = std::move(socialNetworkUser2);
+}
+
+Friendship::Friendship(Vertex *user1, Vertex *user2)
+{
+    m_user1 = std::shared_ptr<Vertex>(user1);
+    m_user2 = std::shared_ptr<Vertex>(user2);
+}
+
+Friendship::Friendship(const SocialNetworkUser& user1, const SocialNetworkUser& user2)
+{
+    m_user1 = std::shared_ptr<Vertex>(const_cast<SocialNetworkUser*>(&user1));
+    m_user2 = std::shared_ptr<Vertex>(const_cast<SocialNetworkUser*>(&user2));
 }
