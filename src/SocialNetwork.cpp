@@ -17,7 +17,7 @@ SocialNetwork &SocialNetwork::operator=(SocialNetwork &&socialNetwork) noexcept
     return *this;
 }
 
-bool SocialNetwork::addFriendship(const std::shared_ptr<Edge> &edge)
+bool SocialNetwork::addEdge(const std::shared_ptr<Edge> &edge)
 {
     if (edge == nullptr)
     {
@@ -31,7 +31,7 @@ bool SocialNetwork::addFriendship(const std::shared_ptr<Edge> &edge)
         return false;
     }
 
-    if (areFriends(edge))
+    if (isEdgeInGraph(edge))
     {
         std::cout << "You are already friends!\n";
         return false;
@@ -43,23 +43,23 @@ bool SocialNetwork::addFriendship(const std::shared_ptr<Edge> &edge)
         return false;
     }
 
-    if (!userExists(edge->getUser1()))
+    if (!isVertexInGraph(edge->getUser1()))
     {
-        addUser(edge->getUser1());
+        addVertex(edge->getUser1());
     }
 
-    if (!userExists(edge->getUser2()))
+    if (!isVertexInGraph(edge->getUser2()))
     {
-        addUser(edge->getUser2());
+        addVertex(edge->getUser2());
     }
 
     m_friendships.push_back(edge);
-    m_friendsList[std::shared_ptr<Vertex>(edge->getUser1())].push_back(std::shared_ptr<Vertex>(edge->getUser2()));
-    m_friendsList[std::shared_ptr<Vertex>(edge->getUser2())].push_back(std::shared_ptr<Vertex>(edge->getUser1()));
+    m_friendsList[edge->getUser1()].push_back(edge->getUser2());
+    m_friendsList[edge->getUser2()].push_back(edge->getUser1());
     return true;
 }
 
-bool SocialNetwork::addUser(const std::shared_ptr<Vertex> &user)
+bool SocialNetwork::addVertex(const std::shared_ptr<Vertex> &user)
 {
     if (user == nullptr)
     {
@@ -67,7 +67,7 @@ bool SocialNetwork::addUser(const std::shared_ptr<Vertex> &user)
         return false;
     }
 
-    if (userExists(user))
+    if (isVertexInGraph(user))
     {
         std::cout << "Vertex already in this graph!\n";
         return false;
@@ -78,20 +78,19 @@ bool SocialNetwork::addUser(const std::shared_ptr<Vertex> &user)
     return true;
 }
 
-bool SocialNetwork::areFriends(const std::shared_ptr<Edge> &edge)
+bool SocialNetwork::isEdgeInGraph(const std::shared_ptr<Edge> &edge)
 {
     return std::any_of(m_friendships.begin(), m_friendships.end(),
                        [&edge](const std::shared_ptr<Edge> &friendship)
                        { return *friendship == *edge; });
 }
 
-bool
-SocialNetwork::breadthFirstSearch(const std::shared_ptr<Vertex> &source, const std::shared_ptr<Vertex> &destination,
-                                  std::map<std::shared_ptr<Vertex>, std::shared_ptr<Vertex>> &pred,
-                                  std::map<std::shared_ptr<Vertex>, int> &distance)
+bool SocialNetwork::breadthFirstSearch(const std::shared_ptr<Vertex> &source, const std::shared_ptr<Vertex> &destination,
+                                  std::unordered_map<std::shared_ptr<Vertex>, std::shared_ptr<Vertex>, VertexMapHash, VertexMapEq> &pred,
+                                  std::unordered_map<std::shared_ptr<Vertex>, int, VertexMapHash, VertexMapEq> &distance)
 {
     std::list<std::shared_ptr<Vertex>> queue;
-    std::map<std::shared_ptr<Vertex>, bool> visited;
+    std::unordered_map<std::shared_ptr<Vertex>, bool, VertexMapHash, VertexMapEq> visited;
 
     for (const std::shared_ptr<Vertex> &user: m_users)
     {
@@ -106,21 +105,20 @@ SocialNetwork::breadthFirstSearch(const std::shared_ptr<Vertex> &source, const s
 
     while (!queue.empty())
     {
-        std::shared_ptr<Vertex> queueUser{queue.front()};
+        std::shared_ptr<Vertex> queueUser = queue.front();
         queue.pop_front();
 
         size_t adjListSize = m_friendsList[queueUser].size();
         for (size_t i = 0; i < adjListSize; i++)
         {
-            std::shared_ptr<Vertex> adjListElement = m_friendsList[queueUser][i];
-            if (!visited[adjListElement])
+            if (!visited[m_friendsList[queueUser][i]])
             {
-                visited[adjListElement] = true;
-                distance[adjListElement] = distance[queueUser] + 1;
-                pred[adjListElement] = queueUser;
-                queue.push_back(adjListElement);
+                visited[m_friendsList[queueUser][i]] = true;
+                distance[m_friendsList[queueUser][i]] = distance[queueUser] + 1;
+                pred[m_friendsList[queueUser][i]] = queueUser;
+                queue.push_back(m_friendsList[queueUser][i]);
 
-                if (adjListElement == destination)
+                if (m_friendsList[queueUser][i]->getUsername() == destination->getUsername())
                 {
                     return true;
                 }
@@ -133,17 +131,17 @@ SocialNetwork::breadthFirstSearch(const std::shared_ptr<Vertex> &source, const s
 
 std::vector<std::shared_ptr<Vertex>> SocialNetwork::getPath(const std::shared_ptr<Vertex> &source,
                                                             const std::shared_ptr<Vertex> &destination,
-                                                            std::map<std::shared_ptr<Vertex>, std::shared_ptr<Vertex>> &predecessor,
-                                                            std::map<std::shared_ptr<Vertex>, int> &distance)
+                                                            std::unordered_map<std::shared_ptr<Vertex>, std::shared_ptr<Vertex>, VertexMapHash, VertexMapEq> &pred,
+                                                            std::unordered_map<std::shared_ptr<Vertex>, int, VertexMapHash, VertexMapEq> &distance)
 {
     std::vector<std::shared_ptr<Vertex>> path;
     std::shared_ptr<Vertex> crawl = destination;
     path.push_back(crawl);
 
-    while (predecessor[crawl]->getUsername() != "INVALID")
+    while (pred[crawl]->getUsername() != "INVALID")
     {
-        path.push_back(predecessor[crawl]);
-        crawl = predecessor[crawl];
+        path.push_back(pred[crawl]);
+        crawl = pred[crawl];
     }
 
     return path;
@@ -173,25 +171,26 @@ bool SocialNetwork::removeEdge(const std::shared_ptr<Edge> &edge)
         return false;
     }
 
-    if (!areFriends(edge))
+    if (!isEdgeInGraph(edge))
     {
         std::cout << "Edge is not in the graph!\n";
         return false;
     }
 
     // Remove the edge from the edges list
-    m_friendships.erase(std::remove(m_friendships.begin(), m_friendships.end(), edge), m_friendships.end());
+    auto pred = [&edge](const std::shared_ptr<Edge>& friendship){return *edge == *friendship;};
+    auto it = std::remove_if(m_friendships.begin(), m_friendships.end(), pred);
+    m_friendships.erase(it, m_friendships.end());
 
     // Remove the SECOND VERTEX from the adjacency list of the FIRST VERTEX in the received EDGE
     // 1. for ease of use
-    std::vector<std::shared_ptr<Vertex>> adjList = std::move(m_friendsList[edge->getUser1()]);
-    adjList.erase(std::remove(adjList.begin(), adjList.end(), edge->getUser2()), adjList.end());
-    m_friendsList[edge->getUser1()] = std::move(adjList);
+    auto pred1 = [&edge](const std::shared_ptr<Vertex>& user){return (*edge->getUser2() == *user || *edge->getUser1() == *user);};
+    auto it1 = std::remove_if(m_friendsList[edge->getUser1()].begin(),m_friendsList[edge->getUser1()].end(), pred1);
+    m_friendsList[edge->getUser1()].erase(it1 ,m_friendsList[edge->getUser1()].end());
 
     // Remove the FIRST VERTEX from the adjacency list of the SECOND VERTEX in the received EDGE
-    adjList = std::move(m_friendsList[edge->getUser2()]);
-    adjList.erase(std::remove(adjList.begin(), adjList.end(), edge->getUser1()), adjList.end());
-    m_friendsList[edge->getUser2()] = std::move(adjList);
+    it1 = std::remove_if(m_friendsList[edge->getUser2()].begin(),m_friendsList[edge->getUser2()].end(), pred1);
+    m_friendsList[edge->getUser2()].erase(it1,m_friendsList[edge->getUser2()].end());
     return true;
 }
 
@@ -203,7 +202,7 @@ bool SocialNetwork::removeVertex(const std::shared_ptr<Vertex> &user)
         return false;
     }
 
-    if (!userExists(user))
+    if (!isVertexInGraph(user))
     {
         std::cout << "Vertex not found in the graph!\n";
     }
@@ -213,12 +212,14 @@ bool SocialNetwork::removeVertex(const std::shared_ptr<Vertex> &user)
     while (!m_friendsList[user].empty())
     {
         edgeToBeRemoved->setUser(m_friendsList[user][0], true);
+        removeEdge(edgeToBeRemoved);
     }
+
     m_users.erase(std::remove(m_users.begin(), m_users.end(), user), m_users.end());
     return true;
 }
 
-bool SocialNetwork::shortestChainOfFriends(const std::shared_ptr<Vertex> &user1, const std::shared_ptr<Vertex> &user2)
+bool SocialNetwork::shortestPath(const std::shared_ptr<Vertex> &user1, const std::shared_ptr<Vertex> &user2)
 {
     if (user1 == nullptr || user2 == nullptr)
     {
@@ -226,13 +227,13 @@ bool SocialNetwork::shortestChainOfFriends(const std::shared_ptr<Vertex> &user1,
         return false;
     }
 
-    if (!userExists(user1))
+    if (!isVertexInGraph(user1))
     {
         std::cout << "User \"" + user1->getUsername() + "\" is not in the social network\n";
         return false;
     }
 
-    if (!userExists(user2))
+    if (!isVertexInGraph(user2))
     {
         std::cout << "User " + user2->getUsername() + " is not in the social network\n";
         return false;
@@ -252,8 +253,8 @@ bool SocialNetwork::shortestChainOfFriends(const std::shared_ptr<Vertex> &user1,
 bool SocialNetwork::shortestPath(const std::shared_ptr<Vertex> &source, const std::shared_ptr<Vertex> &destination,
                                  std::vector<std::shared_ptr<Vertex>> &path)
 {
-    std::map<std::shared_ptr<Vertex>, std::shared_ptr<Vertex>> predecessor;
-    std::map<std::shared_ptr<Vertex>, int> distance;
+    std::unordered_map<std::shared_ptr<Vertex>, std::shared_ptr<Vertex>, VertexMapHash, VertexMapEq> predecessor;
+    std::unordered_map<std::shared_ptr<Vertex>, int, VertexMapHash, VertexMapEq> distance;
 
     if (!breadthFirstSearch(source, destination, predecessor, distance))
     {
@@ -265,14 +266,14 @@ bool SocialNetwork::shortestPath(const std::shared_ptr<Vertex> &source, const st
     return true;
 }
 
-bool SocialNetwork::userExists(const std::shared_ptr<Vertex> &socialNetworkUser)
+bool SocialNetwork::isVertexInGraph(const std::shared_ptr<Vertex> &socialNetworkUser)
 {
     return std::any_of(m_users.begin(), m_users.end(),
                        [&socialNetworkUser](const std::shared_ptr<Vertex> &user)
                        { return *user == *socialNetworkUser; });
 }
 
-bool SocialNetwork::addFriendship(const std::shared_ptr<Vertex> &user1, const std::shared_ptr<Vertex> &user2)
+bool SocialNetwork::addEdge(const std::shared_ptr<Vertex> &user1, const std::shared_ptr<Vertex> &user2)
 {
     if (user1 == nullptr || user2 == nullptr)
     {
@@ -280,11 +281,11 @@ bool SocialNetwork::addFriendship(const std::shared_ptr<Vertex> &user1, const st
         return false;
     }
 
-    addFriendship(std::shared_ptr<Edge>(new Friendship(user1, user2)));
+    addEdge(std::shared_ptr<Edge>(new Friendship(user1, user2)));
     return true;
 }
 
-bool SocialNetwork::addFriendship(Vertex *user1, Vertex *user2)
+bool SocialNetwork::addEdge(Vertex *user1, Vertex *user2)
 {
     if (user1 == nullptr || user2 == nullptr)
     {
@@ -292,11 +293,11 @@ bool SocialNetwork::addFriendship(Vertex *user1, Vertex *user2)
         return false;
     }
 
-    addFriendship(std::shared_ptr<Edge>(new Friendship(user1, user2)));
+    addEdge(std::shared_ptr<Edge>(new Friendship(user1, user2)));
     return true;
 }
 
-bool SocialNetwork::addUser(Vertex *user)
+bool SocialNetwork::addVertex(Vertex *user)
 {
     if (user == nullptr)
     {
@@ -304,17 +305,17 @@ bool SocialNetwork::addUser(Vertex *user)
         return false;
     }
 
-    addUser(std::shared_ptr<Vertex>(user));
+    addVertex(std::shared_ptr<Vertex>(user));
     return true;
 }
 
-bool SocialNetwork::addFriendship(Friendship &friendship)
+bool SocialNetwork::addEdge(Friendship &friendship)
 {
-    addFriendship(std::shared_ptr<Edge>(new Friendship(friendship.getUser1(), friendship.getUser2())));
+    addEdge(std::shared_ptr<Edge>(new Friendship(friendship.getUser1(), friendship.getUser2())));
     return true;
 }
 
-bool SocialNetwork::addFriendship(Edge *edge)
+bool SocialNetwork::addEdge(Edge *edge)
 {
     if (edge == nullptr)
     {
@@ -322,7 +323,7 @@ bool SocialNetwork::addFriendship(Edge *edge)
         return false;
     }
 
-    addFriendship(std::shared_ptr<Edge>(edge));
+    addEdge(std::shared_ptr<Edge>(edge));
     return true;
 }
 
@@ -340,54 +341,64 @@ void SocialNetwork::printFriendList()
     std::cout << "\n";
 }
 
-bool SocialNetwork::shortestChainOfFriends(Vertex *user1, Vertex *user2)
+bool SocialNetwork::shortestPath(Vertex *user1, Vertex *user2)
 {
-    return shortestChainOfFriends(std::shared_ptr<Vertex>(user1), std::shared_ptr<Vertex>(user2));
+    return shortestPath(std::shared_ptr<Vertex>(user1), std::shared_ptr<Vertex>(user2));
 }
 
-bool SocialNetwork::areFriends(const SocialNetworkUser& user1, const SocialNetworkUser& user2)
+bool SocialNetwork::isEdgeInGraph(const SocialNetworkUser& user1, const SocialNetworkUser& user2)
 {
-    return areFriends(std::shared_ptr<Vertex>(const_cast<SocialNetworkUser*>(&user1)),
+    return isEdgeInGraph(std::shared_ptr<Vertex>(const_cast<SocialNetworkUser*>(&user1)),
                       std::shared_ptr<Vertex>(const_cast<SocialNetworkUser*>(&user2)));
 }
 
-bool SocialNetwork::addUser(const SocialNetworkUser& user)
+bool SocialNetwork::addVertex(const SocialNetworkUser& user)
 {
-    return addUser(std::shared_ptr<Vertex>(const_cast<SocialNetworkUser*>(&user)));
+    return addVertex(std::shared_ptr<Vertex>(const_cast<SocialNetworkUser*>(&user)));
 }
 
-bool SocialNetwork::areFriends(Edge *edge)
+bool SocialNetwork::isEdgeInGraph(Edge *edge)
 {
-    return areFriends(std::shared_ptr<Edge>(edge));
+    return isEdgeInGraph(std::shared_ptr<Edge>(edge));
 }
 
-bool SocialNetwork::userExists(Vertex *vertex)
+bool SocialNetwork::isVertexInGraph(Vertex *vertex)
 {
-    return userExists(std::shared_ptr<Vertex>(vertex));
+    return isVertexInGraph(std::shared_ptr<Vertex>(vertex));
 }
 
-bool SocialNetwork::areFriends(Vertex *user1, Vertex *user2)
+bool SocialNetwork::isEdgeInGraph(Vertex *user1, Vertex *user2)
 {
-    return areFriends(std::shared_ptr<Edge>(new Friendship(user1, user2)));
+    return isEdgeInGraph(std::shared_ptr<Edge>(new Friendship(user1, user2)));
 }
 
-bool SocialNetwork::areFriends(Friendship &friendship)
+bool SocialNetwork::isEdgeInGraph(Friendship &friendship)
 {
-    return areFriends(std::shared_ptr<Friendship>(&friendship));
+    return isEdgeInGraph(std::shared_ptr<Friendship>(&friendship));
 }
 
-bool SocialNetwork::areFriends(const std::shared_ptr<Vertex> &user1, const std::shared_ptr<Vertex> &user2)
+bool SocialNetwork::isEdgeInGraph(const std::shared_ptr<Vertex> &user1, const std::shared_ptr<Vertex> &user2)
 {
-    return areFriends(std::shared_ptr<Edge>(new Friendship(user1, user2)));
+    return isEdgeInGraph(std::shared_ptr<Edge>(new Friendship(user1, user2)));
 }
 
-bool SocialNetwork::addUser(const std::shared_ptr<SocialNetworkUser> &user)
+bool SocialNetwork::addVertex(const std::shared_ptr<SocialNetworkUser> &user)
 {
-    return addUser(std::shared_ptr<Vertex>(user));
+    return addVertex(std::shared_ptr<Vertex>(user));
 }
 
-std::unordered_map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>, AdjListHash, AdjListEquality>
-SocialNetwork::getFriendships()
+std::unordered_map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>, VertexMapHash, VertexMapEq>
+SocialNetwork::getAdjList()
 {
     return m_friendsList;
+}
+
+bool SocialNetwork::removeEdge(const Edge* const edge)
+{
+    return removeEdge(std::shared_ptr<Edge>(const_cast<Edge*>(edge)));
+}
+
+bool SocialNetwork::removeVertex(const Vertex *const vertex)
+{
+    return removeVertex(std::shared_ptr<Vertex>(const_cast<Vertex*>(vertex)));
 }

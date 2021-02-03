@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-struct AdjListEquality
+struct VertexMapEq
 {
     bool operator()(const std::shared_ptr<Vertex>& Lhs, const std::shared_ptr<Vertex>& Rhs) const
     {
@@ -18,7 +18,7 @@ struct AdjListEquality
     }
 };
 
-struct AdjListHash
+struct VertexMapHash
 {
     std::size_t operator()(const std::shared_ptr<Vertex>& vertex) const
     {
@@ -32,55 +32,56 @@ class UndirectedGraph
 public:
     // Constructors
     UndirectedGraph() = default;
-    UndirectedGraph(const UndirectedGraph& graph) = default;
+    UndirectedGraph(const UndirectedGraph& graph) =     default;
     UndirectedGraph(UndirectedGraph&& graph) noexcept = default;
 
     // Destructor
     virtual ~UndirectedGraph() = 0;
 
     // Copy and Move assignment operators
-    UndirectedGraph& operator=(UndirectedGraph&& graph) noexcept = default;
-    UndirectedGraph& operator=(const UndirectedGraph& graph) = default;
+    UndirectedGraph& operator=(UndirectedGraph&& graph) noexcept =  default;
+    UndirectedGraph& operator=(const UndirectedGraph& graph) =      default;
 
-    [[maybe_unused]] virtual bool addFriendship(Vertex *user1, std::shared_ptr<Vertex>& user2) = delete;
-    [[maybe_unused]] virtual bool addFriendship(Vertex *user1, const std::shared_ptr<Vertex>& user2) = delete;
-    [[maybe_unused]] virtual bool addFriendship(const Vertex *user1, const std::shared_ptr<Vertex>& user2) = delete;
-    [[maybe_unused]] virtual bool addFriendship(std::shared_ptr<Vertex>& user1, Vertex * user2) = delete;
-    [[maybe_unused]] virtual bool addFriendship(std::shared_ptr<Vertex>& user1, const Vertex * user2) = delete;
-    [[maybe_unused]] virtual bool addFriendship(const std::shared_ptr<Vertex>& user1, Vertex * user2) = delete;
-    [[maybe_unused]] virtual bool addFriendship(const std::shared_ptr<Vertex>& user1, const Vertex * user2) = delete;
+    [[maybe_unused]] virtual bool addEdge(Vertex *user1, std::shared_ptr<Vertex>& user2) =              delete;
+    [[maybe_unused]] virtual bool addEdge(Vertex *user1, const std::shared_ptr<Vertex>& user2) =        delete;
+    [[maybe_unused]] virtual bool addEdge(const Vertex *user1, const std::shared_ptr<Vertex>& user2) =  delete;
+    [[maybe_unused]] virtual bool addEdge(std::shared_ptr<Vertex>& user1, Vertex * user2) =             delete;
+    [[maybe_unused]] virtual bool addEdge(std::shared_ptr<Vertex>& user1, const Vertex * user2) =       delete;
+    [[maybe_unused]] virtual bool addEdge(const std::shared_ptr<Vertex>& user1, Vertex * user2) =       delete;
+    [[maybe_unused]] virtual bool addEdge(const std::shared_ptr<Vertex>& user1, const Vertex * user2) = delete;
 
-    virtual bool addFriendship(Edge* edge) = 0;
-    virtual bool addFriendship(Friendship& friendship) = 0;
-    virtual bool addFriendship(const std::shared_ptr<Edge>& edge) = 0;
-    virtual bool addFriendship(Vertex *user1, Vertex *user2) = 0;
-    virtual bool addFriendship(const std::shared_ptr<Vertex>& user1, const std::shared_ptr<Vertex>& user2) = 0;
+    virtual bool addEdge(Edge* edge) = 0;
+    virtual bool addEdge(const std::shared_ptr<Edge>& edge) = 0;
+    virtual bool addEdge(Vertex *user1, Vertex *user2) = 0;
+    virtual bool addEdge(const std::shared_ptr<Vertex>& user1, const std::shared_ptr<Vertex>& user2) = 0;
 
-    virtual bool addUser(Vertex* user) = 0;
-    virtual bool addUser(const std::shared_ptr<Vertex>& user) = 0;
+    virtual bool addVertex(Vertex* user) = 0;
+    virtual bool addVertex(const std::shared_ptr<Vertex>& user) = 0;
 
-    virtual bool areFriends(Vertex *user1, std::shared_ptr<Vertex>& user2) = delete;
-    virtual bool areFriends(Vertex *user1, const std::shared_ptr<Vertex>& user2) = delete;
-    virtual bool areFriends(const Vertex *user1, const std::shared_ptr<Vertex>& user2) = delete;
-    virtual bool areFriends(std::shared_ptr<Vertex>& user2, Vertex * user1) = delete;
-    virtual bool areFriends(std::shared_ptr<Vertex>& user2, const Vertex * user1) = delete;
-    virtual bool areFriends(const std::shared_ptr<Vertex>& user2, Vertex * user1) = delete;
-    virtual bool areFriends(const std::shared_ptr<Vertex>& user2, const Vertex * user1) = delete;
+    virtual bool isEdgeInGraph(Vertex *user1, std::shared_ptr<Vertex>& user2) =                 delete;
+    virtual bool isEdgeInGraph(Vertex *user1, const std::shared_ptr<Vertex>& user2) =           delete;
+    virtual bool isEdgeInGraph(const Vertex *user1, const std::shared_ptr<Vertex>& user2) =     delete;
+    virtual bool isEdgeInGraph(std::shared_ptr<Vertex>& user2, Vertex * user1) =                delete;
+    virtual bool isEdgeInGraph(std::shared_ptr<Vertex>& user2, const Vertex * user1) =          delete;
+    virtual bool isEdgeInGraph(const std::shared_ptr<Vertex>& user2, Vertex * user1) =          delete;
+    virtual bool isEdgeInGraph(const std::shared_ptr<Vertex>& user2, const Vertex * user1) =    delete;
 
-    virtual bool areFriends(Edge *edge) = 0;
-    virtual bool areFriends(Vertex *user1, Vertex *user2) = 0;
-    virtual bool areFriends(const std::shared_ptr<Edge>& edge) = 0;
-    virtual bool areFriends(const std::shared_ptr<Vertex> &user1, const std::shared_ptr<Vertex> &user2) = 0;
+    virtual bool isEdgeInGraph(Edge *edge) = 0;
+    virtual bool isEdgeInGraph(Vertex *user1, Vertex *user2) = 0;
+    virtual bool isEdgeInGraph(const std::shared_ptr<Edge>& edge) = 0;
+    virtual bool isEdgeInGraph(const std::shared_ptr<Vertex> &user1, const std::shared_ptr<Vertex> &user2) = 0;
 
-    virtual bool userExists(Vertex* vertex) = 0;
-    virtual bool userExists(const std::shared_ptr<Vertex> &vertex) = 0;
+    virtual bool isVertexInGraph(Vertex* vertex) = 0;
+    virtual bool isVertexInGraph(const std::shared_ptr<Vertex> &vertex) = 0;
 
-    virtual bool shortestChainOfFriends(const std::shared_ptr<Vertex>& user1, const std::shared_ptr<Vertex>& user2) = 0;
-    virtual bool shortestChainOfFriends(Vertex *user1, Vertex *user2) = 0;
-    virtual std::unordered_map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>, AdjListHash, AdjListEquality> getFriendships() = 0;
+    virtual bool shortestPath(const std::shared_ptr<Vertex>& user1, const std::shared_ptr<Vertex>& user2) = 0;
+    virtual bool shortestPath(Vertex *user1, Vertex *user2) = 0;
+    virtual std::unordered_map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>, VertexMapHash, VertexMapEq> getAdjList() = 0;
     virtual std::vector<std::shared_ptr<Vertex>> getVertices() = 0;
-    virtual bool removeEdge(const std::shared_ptr<Edge>&) = 0;
+    virtual bool removeEdge(const std::shared_ptr<Edge>& edge) = 0;
+    virtual bool removeEdge(const Edge* edge) = 0;
     virtual bool removeVertex(const std::shared_ptr<Vertex> &vertex) = 0;
+    virtual bool removeVertex(const Vertex* const vertex) = 0;
     virtual void printFriendList() = 0;
 };
 
