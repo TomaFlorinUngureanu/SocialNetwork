@@ -25,7 +25,7 @@ int main()
     socialNetwork->addEdge(new SocialNetworkUser("User1"), new SocialNetworkUser("User2"));
     socialNetwork->removeEdge(new Friendship(new SocialNetworkUser("User1"), new SocialNetworkUser("User2")));
 
-
+    //TODO: SOLVE THIS!
     SocialNetworkUser user4("User4");
     socialNetwork->removeVertex(&user4);
     SocialNetworkUser user22("User2");

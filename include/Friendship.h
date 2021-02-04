@@ -18,8 +18,7 @@ private:
 
 public:
     // Constructors
-    Friendship();
-
+    Friendship() = default;
     Friendship(Friendship &&friendship) noexcept;
     Friendship(const SocialNetworkUser& user1, const SocialNetworkUser& user2);
     Friendship(const Friendship &friendship);
@@ -45,9 +44,10 @@ public:
     Friendship &operator=(Friendship &&friendship) noexcept;
 
     // Other operators
-    [[nodiscard]] std::shared_ptr<Vertex> getUser1() override;
-    [[nodiscard]] std::shared_ptr<Vertex> getUser2() override;
-    void setUser(const std::shared_ptr<Vertex> &socialNetworkUser, bool position) override;
+    [[nodiscard]] std::shared_ptr<Vertex> getVertex1() override;
+    [[nodiscard]] std::shared_ptr<Vertex> getVertex2() override;
+    void setVertex(const Vertex* vertex, bool position) override;
+    void setVertex(const std::shared_ptr<Vertex> &socialNetworkUser, bool position) override;
 };
 
 #endif //FRIENDSHIP_H

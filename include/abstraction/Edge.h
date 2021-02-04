@@ -26,10 +26,11 @@ public:
     Edge &operator=(Edge &&edge) noexcept = default;
     bool operator==(Edge &edge);
 
-    virtual void setUser(const std::shared_ptr<Vertex> &socialNetworkUser, bool position) = 0;
+    virtual void setVertex(const Vertex* vertex, bool position) = 0;
+    virtual void setVertex(const std::shared_ptr<Vertex> &socialNetworkUser, bool position) = 0;
 
-    [[nodiscard]] virtual std::shared_ptr<Vertex> getUser2() = 0;
-    [[nodiscard]] virtual std::shared_ptr<Vertex> getUser1() = 0;
+    [[nodiscard]] virtual std::shared_ptr<Vertex> getVertex2() = 0;
+    [[nodiscard]] virtual std::shared_ptr<Vertex> getVertex1() = 0;
 };
 
 #endif //EDGE_H

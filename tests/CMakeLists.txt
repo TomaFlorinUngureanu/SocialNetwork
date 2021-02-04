@@ -4,6 +4,7 @@ project(TESTS)
 add_subdirectory(lib/googletest)
 
 enable_testing()
+
 include_directories(${gtest_SOURCE_DIR}/include
                     ${gtest_SOURCE_DIR}
                     {gmock_SOURCE_DIR}/include
@@ -15,19 +16,23 @@ include_directories(${gtest_SOURCE_DIR}/include
 
 set(PROJECT_SOURCES ../src/abstraction/Vertex.cpp
                     ../src/abstraction/Edge.cpp
+                    ../src/abstraction/UndirectedGraph.cpp
                     ../src/SocialNetworkUser.cpp
                     ../src/Friendship.cpp
                     ../src/SocialNetwork.cpp)
 
 add_executable( FriendshipTests
-                ${PROJECT_SOURCES}
-        unit-tests/test_Friendship.cpp
-)
+                ../src/SocialNetworkUser.cpp
+                ../src/abstraction/Edge.cpp
+                mocks/stubs/Friendship_Stub.cpp
+                mocks/stubs/Vertex_Stub.cpp
+                unit-tests/test_Friendship.cpp
+                )
 
 add_executable( SocialNetworkUserTests
-                ${PROJECT_SOURCES}
-        unit-tests/test_SocialNetworkUser.cpp
-)
+        ../src/abstraction/Vertex.cpp
+        mocks/stubs/SocialNetworkUser_Stub.cpp
+        unit-tests/test_SocialNetworkUser.cpp)
 
 add_executable( SocialNetworkTests
                 ${PROJECT_SOURCES}

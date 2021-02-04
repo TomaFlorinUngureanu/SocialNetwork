@@ -25,7 +25,7 @@ bool SocialNetwork::addEdge(const std::shared_ptr<Edge> &edge)
         return false;
     }
 
-    if (*edge->getUser1() == *edge->getUser2())
+    if (*edge->getVertex1() == *edge->getVertex2())
     {
         std::cout << "You cannot be your own friend!\n";
         return false;
@@ -37,25 +37,25 @@ bool SocialNetwork::addEdge(const std::shared_ptr<Edge> &edge)
         return false;
     }
 
-    if (edge->getUser1()->getUsername().empty() || edge->getUser2()->getUsername().empty())
+    if (edge->getVertex1()->getUsername().empty() || edge->getVertex2()->getUsername().empty())
     {
         std::cout << "Cannot add an empty or incomplete edge!\n";
         return false;
     }
 
-    if (!isVertexInGraph(edge->getUser1()))
+    if (!isVertexInGraph(edge->getVertex1()))
     {
-        addVertex(edge->getUser1());
+        addVertex(edge->getVertex1());
     }
 
-    if (!isVertexInGraph(edge->getUser2()))
+    if (!isVertexInGraph(edge->getVertex2()))
     {
-        addVertex(edge->getUser2());
+        addVertex(edge->getVertex2());
     }
 
     m_friendships.push_back(edge);
-    m_friendsList[edge->getUser1()].push_back(edge->getUser2());
-    m_friendsList[edge->getUser2()].push_back(edge->getUser1());
+    m_friendsList[edge->getVertex1()].push_back(edge->getVertex2());
+    m_friendsList[edge->getVertex2()].push_back(edge->getVertex1());
     return true;
 }
 
@@ -184,13 +184,13 @@ bool SocialNetwork::removeEdge(const std::shared_ptr<Edge> &edge)
 
     // Remove the SECOND VERTEX from the adjacency list of the FIRST VERTEX in the received EDGE
     // 1. for ease of use
-    auto pred1 = [&edge](const std::shared_ptr<Vertex>& user){return (*edge->getUser2() == *user || *edge->getUser1() == *user);};
-    auto it1 = std::remove_if(m_friendsList[edge->getUser1()].begin(),m_friendsList[edge->getUser1()].end(), pred1);
-    m_friendsList[edge->getUser1()].erase(it1 ,m_friendsList[edge->getUser1()].end());
+    auto pred1 = [&edge](const std::shared_ptr<Vertex>& user){return (*edge->getVertex2() == *user || *edge->getVertex1() == *user);};
+    auto it1 = std::remove_if(m_friendsList[edge->getVertex1()].begin(), m_friendsList[edge->getVertex1()].end(), pred1);
+    m_friendsList[edge->getVertex1()].erase(it1 , m_friendsList[edge->getVertex1()].end());
 
     // Remove the FIRST VERTEX from the adjacency list of the SECOND VERTEX in the received EDGE
-    it1 = std::remove_if(m_friendsList[edge->getUser2()].begin(),m_friendsList[edge->getUser2()].end(), pred1);
-    m_friendsList[edge->getUser2()].erase(it1,m_friendsList[edge->getUser2()].end());
+    it1 = std::remove_if(m_friendsList[edge->getVertex2()].begin(), m_friendsList[edge->getVertex2()].end(), pred1);
+    m_friendsList[edge->getVertex2()].erase(it1, m_friendsList[edge->getVertex2()].end());
     return true;
 }
 
@@ -208,10 +208,10 @@ bool SocialNetwork::removeVertex(const std::shared_ptr<Vertex> &user)
     }
 
     std::shared_ptr<Edge> edgeToBeRemoved{new Friendship()};
-    edgeToBeRemoved->setUser(user, false);
+    edgeToBeRemoved->setVertex(user, false);
     while (!m_friendsList[user].empty())
     {
-        edgeToBeRemoved->setUser(m_friendsList[user][0], true);
+        edgeToBeRemoved->setVertex(m_friendsList[user][0], true);
         removeEdge(edgeToBeRemoved);
     }
 
@@ -311,7 +311,7 @@ bool SocialNetwork::addVertex(Vertex *user)
 
 bool SocialNetwork::addEdge(Friendship &friendship)
 {
-    addEdge(std::shared_ptr<Edge>(new Friendship(friendship.getUser1(), friendship.getUser2())));
+    addEdge(std::shared_ptr<Edge>(new Friendship(friendship.getVertex1(), friendship.getVertex2())));
     return true;
 }
 

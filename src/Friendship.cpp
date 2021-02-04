@@ -1,4 +1,5 @@
 #include <exception/SocialNetworkException.h>
+#include <iostream>
 #include "Friendship.h"
 
 Friendship::Friendship(Friendship &&friendship) noexcept
@@ -19,36 +20,42 @@ Friendship &Friendship::operator=(Friendship &&friendship) noexcept
     return *this;
 }
 
-std::shared_ptr<Vertex> Friendship::getUser1()
+std::shared_ptr<Vertex> Friendship::getVertex1()
 {
     return m_user1;
 }
 
-std::shared_ptr<Vertex> Friendship::getUser2()
+std::shared_ptr<Vertex> Friendship::getVertex2()
 {
     return m_user2;
 }
 
-void Friendship::setUser(const std::shared_ptr<Vertex> &socialNetworkUser, bool position)
+void Friendship::setVertex(const std::shared_ptr<Vertex> &socialNetworkUser, bool position)
 {
-    if (!socialNetworkUser->getUsername().empty() && !socialNetworkUser->getUsername().empty() && m_user2 == m_user1)
+    if (!socialNetworkUser->getUsername().empty())
     {
-        throw SocialNetworkException();
+        std::cout<<"User has no name!";
+        return;
     }
 
     if (!position)
     {
+        if (m_user2 == socialNetworkUser)
+        {
+            std::cout<<"Cannot set vertex as itself!";
+            return;
+        }
         m_user1 = socialNetworkUser;
-    } else
+    }
+    else
     {
+        if (m_user1 == socialNetworkUser)
+        {
+            std::cout<<"Cannot set vertex as itself!";
+            return;
+        }
         m_user2 = socialNetworkUser;
     }
-}
-
-Friendship::Friendship()
-{
-    m_user1 = std::shared_ptr<Vertex>(new SocialNetworkUser());
-    m_user2 = std::shared_ptr<Vertex>(new SocialNetworkUser());
 }
 
 Friendship::Friendship(const std::shared_ptr<Vertex> &socialNetworkUser1, const std::shared_ptr<Vertex> &socialNetworkUser2)
@@ -73,4 +80,9 @@ Friendship::Friendship(const SocialNetworkUser& user1, const SocialNetworkUser& 
 {
     m_user1 = std::shared_ptr<Vertex>(const_cast<SocialNetworkUser*>(&user1));
     m_user2 = std::shared_ptr<Vertex>(const_cast<SocialNetworkUser*>(&user2));
+}
+
+void Friendship::setVertex(const Vertex *const vertex, bool position)
+{
+    setVertex(std::shared_ptr<Vertex>(vertex), position);
 }

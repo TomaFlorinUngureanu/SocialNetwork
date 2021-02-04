@@ -4,22 +4,24 @@
 #include <string>
 #include "gmock/gmock.h"
 
-class SocialNetworkUserInterface
+class VertexInterface: public Vertex
 {
 public:
-    virtual ~SocialNetworkUserInterface() = default;
-
+    ~VertexInterface() override = default;
+    VertexInterface() = default;
 protected:
-    [[nodiscard]] virtual std::string getUsername() const = 0;
-    virtual void setUsername(std::string label) = 0;
+    [[nodiscard]] std::string getUsername() const override = 0;
+    void setUsername(const std::string& username) override = 0;
 };
 
-class MockSocialNetworkUser : public SocialNetworkUserInterface
+class MockSocialNetworkUser : public VertexInterface
 {
 public:
-    ~MockSocialNetworkUser() override = default;
+    MockSocialNetworkUser();
+    explicit MockSocialNetworkUser(const std::string &username);
+    ~MockSocialNetworkUser() override;
     MOCK_CONST_METHOD0(getUsername, std::string());
-    MOCK_METHOD1(setUsername, void(std::string));
+    MOCK_METHOD1(setUsername, void(const std::string&));
 };
 
 #endif //TESTS_MOCK_SOCIAL_NETWORK_USER_H
