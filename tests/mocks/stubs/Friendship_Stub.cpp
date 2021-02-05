@@ -46,3 +46,5 @@ void Friendship::setVertex(const Vertex *const vertex, bool position)
         mockFriendship->setVertex(vertex, position);
     }
 }
+
+Friendship::F

@@ -20,8 +20,6 @@ public:
     // Constructors
     Friendship() = default;
     Friendship(Friendship &&friendship) noexcept;
-    Friendship(const SocialNetworkUser& user1, const SocialNetworkUser& user2);
-    Friendship(const Friendship &friendship);
     Friendship(Vertex *user1, Vertex *user2);
     Friendship(const std::shared_ptr<Vertex> &user1, const std::shared_ptr<Vertex> &user2);
     Friendship(std::shared_ptr<Vertex> &&user1, std::shared_ptr<Vertex> &&user2);

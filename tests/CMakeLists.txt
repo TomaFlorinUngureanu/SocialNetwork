@@ -35,7 +35,11 @@ add_executable( SocialNetworkUserTests
         unit-tests/test_SocialNetworkUser.cpp)
 
 add_executable( SocialNetworkTests
-                ${PROJECT_SOURCES}
+        ../src/abstraction/Edge.cpp
+        ../src/abstraction/Vertex.cpp
+        mocks/stubs/Friendship_Stub.cpp
+        mocks/stubs/SocialNetworkUser_Stub.cpp
+        ../src/SocialNetwork.cpp
         unit-tests/test_SocialNetwork.cpp
 )
 

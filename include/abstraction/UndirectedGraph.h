@@ -23,7 +23,7 @@ struct VertexMapHash
     std::size_t operator()(const std::shared_ptr<Vertex>& vertex) const
     {
         std::hash<std::string> hasher;
-        return hasher(vertex->getUsername());
+        return hasher(vertex->getLabel());
     }
 };
 
@@ -81,7 +81,7 @@ public:
     virtual bool removeEdge(const std::shared_ptr<Edge>& edge) = 0;
     virtual bool removeEdge(const Edge* edge) = 0;
     virtual bool removeVertex(const std::shared_ptr<Vertex> &vertex) = 0;
-    virtual bool removeVertex(const Vertex* const vertex) = 0;
+    virtual bool removeVertex(const Vertex* vertex) = 0;
     virtual void printFriendList() = 0;
 };
 

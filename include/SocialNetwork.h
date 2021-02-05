@@ -4,7 +4,6 @@
 // project class headers
 #include <map>
 #include "abstraction/UndirectedGraph.h"
-#include "SocialNetworkUser.h"
 
 class SocialNetwork : public UndirectedGraph
 {

@@ -19,21 +19,21 @@ MockSocialNetworkUser::MockSocialNetworkUser(const std::string &username)
     snuInterface = this;
 }
 
-std::string SocialNetworkUser::getUsername() const
+std::string SocialNetworkUser::getLabel() const
 {
     if (snuInterface != nullptr)
     {
-        return snuInterface->getUsername();
+        return snuInterface->getLabel();
     }
     return "";
 }
 
-void SocialNetworkUser::setUsername(const std::string &userName)
+void SocialNetworkUser::setLabel(const std::string &userName)
 {
     if (snuInterface != nullptr)
     {
         m_username = userName;
-        snuInterface->setUsername(userName);
+        snuInterface->setLabel(userName);
     }
 }
 

@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <memory>
 
 class Vertex
 {
@@ -22,8 +23,8 @@ public:
     Vertex &operator=(Vertex &&vertex) noexcept = default;
     bool operator==(Vertex& vertex) const;
 
-    virtual void setUsername(const std::string& username) = 0;
-    [[nodiscard]] virtual std::string getUsername() const = 0;
+    virtual void setLabel(const std::string& username) = 0;
+    [[nodiscard]] virtual std::string getLabel() const = 0;
 };
 
 #endif //VERTEX_H

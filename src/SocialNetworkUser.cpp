@@ -31,12 +31,12 @@ bool SocialNetworkUser::operator<(const SocialNetworkUser &socialNetworkUser) co
     return m_username < socialNetworkUser.m_username;
 }
 
-std::string SocialNetworkUser::getUsername() const
+std::string SocialNetworkUser::getLabel() const
 {
     return m_username;
 }
 
-void SocialNetworkUser::setUsername(const std::string& userName)
+void SocialNetworkUser::setLabel(const std::string& userName)
 {
     m_username = userName;
 }

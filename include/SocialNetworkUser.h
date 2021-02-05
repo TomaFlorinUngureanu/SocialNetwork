@@ -31,8 +31,8 @@ public:
     bool operator!=(const SocialNetworkUser &socialNetworkUser) const;
     bool operator<(const SocialNetworkUser &socialNetworkUser) const;
 
-    [[nodiscard]] std::string getUsername() const override;
-    void setUsername(const std::string &userName) override;
+    [[nodiscard]] std::string getLabel() const override;
+    void setLabel(const std::string &userName) override;
 };
 
 #endif //SOCIALNETWORKUSER_H

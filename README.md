@@ -15,5 +15,5 @@ There is no need to use other algorithms, such as Dijkstra, or Bellman-Ford beca
 <br>4. Trying to find a chain between two users that are directly connected (distance 1 chain)
 <br>5. Trying to find a chain between to users that are not connected indirectly at all (no chain can be found)
 <br>6. Simple success case with chain distance >= 2
-<br>7. Trying to create users with no username
+<br>7. Trying to create users with no genericUsername
 <br>8. Trying to create a friendship relationship from a user to itself

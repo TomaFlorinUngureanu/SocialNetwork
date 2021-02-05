@@ -4,5 +4,5 @@ Vertex::~Vertex()= default;
 
 bool Vertex::operator==(Vertex &vertex) const
 {
-    return this->getUsername() == vertex.getUsername();
+    return this->getLabel() == vertex.getLabel();
 }

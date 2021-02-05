@@ -2,7 +2,8 @@
 #include "SocialNetwork.h"
 
 // include mocks
-#include "MockSocialNetwork.h"
+#include "MockSocialNetworkUser.h"
+#include "MockFriendship.h"
 
 // include GTest & Gmock
 #include "gmock/gmock.h"
@@ -13,8 +14,9 @@ using ::testing::StrictMock;
 class SocialNetworkTest: public ::testing::Test
 {
 public:
-    StrictMock<MockSocialNetwork> socialNetworkMock;
-    std::string username{"User"};
+    StrictMock<MockFriendship> frMock;
+    StrictMock<MockSocialNetworkUser> snuMock;
+    std::string genericUsername{"User"};
 };
 
 /**
@@ -23,18 +25,24 @@ public:
  */
 TEST_F(SocialNetworkTest, ADD_VERTEX_TC_1)
 {
+    // variable declarations and initializations
     SocialNetwork socialNetwork{};
+
+    // function under test
     socialNetwork.addVertex(nullptr);
 }
 
 /**
  * @test ADD_VERTEX_TC_2
- * Testing the adding of a vertex type with pointer
+ * Testing the adding of a vertex type with a raw pointer
  */
 TEST_F(SocialNetworkTest, ADD_VERTEX_TC_2)
 {
+    // variable declarations and initializations
     SocialNetwork socialNetwork{};
-    socialNetwork.addVertex(new SocialNetworkUser(username));
+
+    // function under test
+    socialNetwork.addVertex(new SocialNetworkUser(genericUsername));
 }
 
 /**
@@ -44,8 +52,9 @@ TEST_F(SocialNetworkTest, ADD_VERTEX_TC_2)
 TEST_F(SocialNetworkTest, ADD_VERTEX_TC_3)
 {
     SocialNetwork socialNetwork{};
-    std::shared_ptr<Vertex> vertex{new SocialNetworkUser(username)};
+    std::shared_ptr<Vertex> vertex{new SocialNetworkUser(genericUsername)};
 
+    // function under test
     socialNetwork.addVertex(vertex);
 }
 
@@ -56,11 +65,15 @@ TEST_F(SocialNetworkTest, ADD_VERTEX_TC_3)
  */
 TEST_F(SocialNetworkTest, ADD_VERTEX_TC_4)
 {
+    // variable declarations and initializations
     SocialNetwork socialNetwork{};
-    std::shared_ptr<Vertex> vertex{new SocialNetworkUser(username)};
+    std::shared_ptr<Vertex> vertex{new SocialNetworkUser(genericUsername)};
+    SocialNetworkUser user{genericUsername};
+    
+    // prerequisites
     socialNetwork.addVertex(vertex);
-
-    SocialNetworkUser user{username};
+    
+    // function under test
     socialNetwork.addVertex(&user);
 }
 
@@ -70,7 +83,10 @@ TEST_F(SocialNetworkTest, ADD_VERTEX_TC_4)
  */
 TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_1)
 {
+    // variable declarations and initializations
     SocialNetwork socialNetwork{};
+
+    // function under test
     socialNetwork.removeVertex(nullptr);
 }
 
@@ -80,11 +96,15 @@ TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_1)
  */
 TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_2)
 {
+    // variable declarations and initializations
     SocialNetwork socialNetwork{};
-    std::shared_ptr<Vertex> vertex{new SocialNetworkUser(username)};
+    std::shared_ptr<Vertex> vertex{new SocialNetworkUser(genericUsername)};
 
+    // prerequisites
     socialNetwork.addVertex(vertex);
-    socialNetwork.removeVertex(new SocialNetworkUser(username));
+
+    // function under test
+    socialNetwork.removeVertex(new SocialNetworkUser(genericUsername));
 }
 
 /**
@@ -93,25 +113,15 @@ TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_2)
  */
 TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_3)
 {
+    // variable declarations and initializations
     SocialNetwork socialNetwork{};
-    std::shared_ptr<Vertex> vertex{new SocialNetworkUser(username)};
+    std::shared_ptr<Vertex> vertex{new SocialNetworkUser(genericUsername)};
 
+    // prerequisites
     socialNetwork.addVertex(vertex);
-    socialNetwork.removeVertex(std::shared_ptr<Vertex>(new SocialNetworkUser(username)));
-}
-
-/**
- * @test REMOVE_VERTEX_TC_4
- * Testing the removal of a vertex with a reference. No edges are present in the graph.
- */
-TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_4)
-{
-    SocialNetwork socialNetwork{};
-    SocialNetworkUser user{username};
-    std::shared_ptr<Vertex> vertex{new SocialNetworkUser(username)};
-
-    socialNetwork.addVertex(vertex);
-    socialNetwork.removeVertex(&user);
+    
+    // function under test
+    socialNetwork.removeVertex(std::shared_ptr<Vertex>(new SocialNetworkUser(genericUsername)));
 }
 
 /**
@@ -121,13 +131,17 @@ TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_4)
  */
 TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_5)
 {
+    // variable declarations and initializations
     SocialNetwork socialNetwork{};
-    SocialNetworkUser user{username};
+    SocialNetworkUser user{genericUsername};
     std::shared_ptr<Vertex> vertex{&user};
+    
+    // prerequisites
     socialNetwork.addVertex(vertex);
-
-    socialNetwork.removeVertex(std::shared_ptr<Vertex>(new SocialNetworkUser(username)));
-    socialNetwork.removeVertex(std::shared_ptr<Vertex>(new SocialNetworkUser(username)));
+    socialNetwork.removeVertex(std::shared_ptr<Vertex>(new SocialNetworkUser(genericUsername)));
+    
+    // function under test
+    socialNetwork.removeVertex(std::shared_ptr<Vertex>(new SocialNetworkUser(genericUsername)));
 }
 
 /**
@@ -138,6 +152,19 @@ TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_5)
  */
 TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_6)
 {
+    // variable declarations and initializations
+    SocialNetwork socialNetwork;
+    std::shared_ptr<Vertex>v1 = std::make_shared<SocialNetworkUser>(SocialNetworkUser("User"));
+    std::shared_ptr<Vertex>v2 = std::make_shared<SocialNetworkUser>(SocialNetworkUser("User1"));
+    std::shared_ptr<Vertex>v3 = std::make_shared<SocialNetworkUser>(SocialNetworkUser("User2"));
+    
+    // prerequisites
+    socialNetwork.addVertex(v1);
+    socialNetwork.addVertex(v2);
+    socialNetwork.addEdge(v1, v2);
+
+    // function under test
+    socialNetwork.removeVertex(v1);
 
 }
 
@@ -149,7 +176,20 @@ TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_6)
  */
 TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_7)
 {
+    // variable declarations and initializations
+    SocialNetwork socialNetwork;
+    std::shared_ptr<Vertex>v1 = std::make_shared<SocialNetworkUser>(SocialNetworkUser("User"));
+    std::shared_ptr<Vertex>v2 = std::make_shared<SocialNetworkUser>(SocialNetworkUser("User1"));
+    std::shared_ptr<Vertex>v3 = std::make_shared<SocialNetworkUser>(SocialNetworkUser("User2"));
 
+    // prerequisites
+    socialNetwork.addVertex(v1);
+    socialNetwork.addVertex(v2);
+    socialNetwork.addEdge(v1, v2);
+    socialNetwork.addEdge(v1, v3);
+
+    // function under test
+    socialNetwork.removeVertex(v1);
 }
 
 /**
@@ -158,16 +198,30 @@ TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_7)
  */
 TEST_F(SocialNetworkTest, ADD_EDGE_TC1)
 {
+    // variable declarations and initializations
+    SocialNetwork socialNetwork;
 
+    // function under test
+    socialNetwork.addEdge(nullptr);
 }
 
 /**
  * @test ADD_EDGE_TC2
- * Add an edge from a vertex to itself. The number of edges should not increase
+ * Add an edge from a vertex to a vertex with the same genericUsername. The number of edges should not increase
+ * The number of vertices should not increase
  */
 TEST_F(SocialNetworkTest, ADD_EDGE_TC2)
 {
+    // variable declarations and initializations
+    SocialNetwork socialNetwork;
+    Vertex* v1 = new SocialNetworkUser(genericUsername);
+    Vertex* v2 = new SocialNetworkUser(genericUsername);
 
+    // prerequisites
+    socialNetwork.addVertex(v1);
+    
+    // function under test
+    socialNetwork.addEdge(v1, v2);
 }
 
 /**
@@ -180,12 +234,21 @@ TEST_F(SocialNetworkTest, ADD_EDGE_TC2)
  */
 TEST_F(SocialNetworkTest, ADD_EDGE_TC3)
 {
+    // variable declarations and initializations
+    SocialNetwork socialNetwork;
+    Vertex* v1 = new SocialNetworkUser("UserA");
+    Vertex* v2 = new SocialNetworkUser("UserB");
 
+    // prerequisites
+    socialNetwork.addVertex(v1);
+
+    // function under test
+    socialNetwork.addEdge(v1, v2);
 }
 
 /**
  * @test ADD_EDGE_TC4
- * Add an edge from a vertex A to one that IS present in the graph (B). The number of edges should increase with 1.
+ * Add an edge from two vertices A and B which are present in the graph. The number of edges should increase with 1.
  * The vertices list size should not increase.
  * The edges list size should increase with 1.
  * The adjacency list size of vertex A should increase with 1 (addition of vertex B).
@@ -193,7 +256,17 @@ TEST_F(SocialNetworkTest, ADD_EDGE_TC3)
  */
 TEST_F(SocialNetworkTest, ADD_EDGE_TC4)
 {
+    // variable declarations and initializations
+    SocialNetwork socialNetwork;
+    Vertex* v1 = new SocialNetworkUser("UserA");
+    Vertex* v2 = new SocialNetworkUser("UserB");
 
+    // prerequisites
+    socialNetwork.addVertex(v1);
+    socialNetwork.addVertex(v2);
+
+    // function under test
+    socialNetwork.addEdge(v1, v2);
 }
 
 /**
@@ -202,7 +275,11 @@ TEST_F(SocialNetworkTest, ADD_EDGE_TC4)
  */
 TEST_F(SocialNetworkTest, REMOVE_EDGE_TC1)
 {
+    // variable declarations and initializations
+    SocialNetwork socialNetwork;
 
+    // function under test
+    socialNetwork.removeVertex(nullptr);
 }
 
 /**
@@ -211,7 +288,18 @@ TEST_F(SocialNetworkTest, REMOVE_EDGE_TC1)
  */
 TEST_F(SocialNetworkTest, REMOVE_EDGE_TC2)
 {
+    // variable declarations and initializations
+    SocialNetwork socialNetwork;
+    Vertex* v1 = new SocialNetworkUser("UserA");
+    Vertex* v2 = new SocialNetworkUser("UserB");
 
+    // prerequisites
+    socialNetwork.addVertex(v1);
+    socialNetwork.addVertex(v2);
+    socialNetwork.addEdge(new Friendship(v2, v1));
+
+    // function under test
+    socialNetwork.removeEdge(new Friendship(new SocialNetworkUser("UserB"), new SocialNetworkUser("UserC")));
 }
 
 /**
@@ -220,7 +308,21 @@ TEST_F(SocialNetworkTest, REMOVE_EDGE_TC2)
  */
 TEST_F(SocialNetworkTest, REMOVE_EDGE_TC3)
 {
+    // variable declarations and initializations
+    SocialNetwork socialNetwork;
+    Vertex* v1 = new SocialNetworkUser("UserA");
+    Vertex* v2 = new SocialNetworkUser("UserB");
 
+    // prerequisites
+    socialNetwork.addVertex(v1);
+    socialNetwork.addVertex(v2);
+    socialNetwork.addEdge(v1, v2);
+
+    // function under test
+    std::shared_ptr<Friendship> fr = std::make_shared<Friendship>();
+    fr->setVertex(v1, false);
+    fr->setVertex(v2, true);
+    socialNetwork.removeEdge(fr);
 }
 
 /**
@@ -229,7 +331,9 @@ TEST_F(SocialNetworkTest, REMOVE_EDGE_TC3)
  */
 TEST_F(SocialNetworkTest, SHORTEST_PATH_TC1)
 {
+    // variable declarations and initializations
 
+    // function under test
 }
 
 /**
@@ -238,7 +342,9 @@ TEST_F(SocialNetworkTest, SHORTEST_PATH_TC1)
  */
 TEST_F(SocialNetworkTest, SHORTEST_PATH_TC2)
 {
+    // variable declarations and initializations
 
+    // function under test
 }
 
 /**
@@ -248,6 +354,9 @@ TEST_F(SocialNetworkTest, SHORTEST_PATH_TC2)
 TEST_F(SocialNetworkTest, SHORTEST_PATH_TC3)
 {
 
+    // variable declarations and initializations
+
+    // function under test
 }
 
 /**
@@ -257,6 +366,9 @@ TEST_F(SocialNetworkTest, SHORTEST_PATH_TC3)
 TEST_F(SocialNetworkTest, SHORTEST_PATH_TC4)
 {
 
+    // variable declarations and initializations
+
+    // function under test
 }
 
 /**
@@ -265,5 +377,7 @@ TEST_F(SocialNetworkTest, SHORTEST_PATH_TC4)
  */
 TEST_F(SocialNetworkTest, SHORTEST_PATH_TC5)
 {
+    // variable declarations and initializations
 
+    // function under test
 }

@@ -7,12 +7,6 @@ Friendship::Friendship(Friendship &&friendship) noexcept
     *this = std::move(friendship);
 }
 
-Friendship::Friendship(const Friendship &friendship)
-{
-    m_user1 = friendship.m_user1;
-    m_user2 = friendship.m_user2;
-}
-
 Friendship &Friendship::operator=(Friendship &&friendship) noexcept
 {
     m_user1 = std::move(friendship.m_user1);
@@ -22,7 +16,11 @@ Friendship &Friendship::operator=(Friendship &&friendship) noexcept
 
 std::shared_ptr<Vertex> Friendship::getVertex1()
 {
-    return m_user1;
+    if (m_user1 != nullptr)
+    {
+        return m_user1;
+    }
+    throw VertexNullException();
 }
 
 std::shared_ptr<Vertex> Friendship::getVertex2()
@@ -32,9 +30,14 @@ std::shared_ptr<Vertex> Friendship::getVertex2()
 
 void Friendship::setVertex(const std::shared_ptr<Vertex> &socialNetworkUser, bool position)
 {
-    if (!socialNetworkUser->getUsername().empty())
+    if (socialNetworkUser == nullptr)
     {
-        std::cout<<"User has no name!";
+        throw VertexNullException();
+    }
+
+    if (socialNetworkUser->getLabel().empty())
+    {
+        std::cout<<"User has no name!\n";
         return;
     }
 
@@ -42,7 +45,7 @@ void Friendship::setVertex(const std::shared_ptr<Vertex> &socialNetworkUser, boo
     {
         if (m_user2 == socialNetworkUser)
         {
-            std::cout<<"Cannot set vertex as itself!";
+            std::cout<<"Cannot set vertex as itself!\n";
             return;
         }
         m_user1 = socialNetworkUser;
@@ -60,26 +63,32 @@ void Friendship::setVertex(const std::shared_ptr<Vertex> &socialNetworkUser, boo
 
 Friendship::Friendship(const std::shared_ptr<Vertex> &socialNetworkUser1, const std::shared_ptr<Vertex> &socialNetworkUser2)
 {
+    if (socialNetworkUser1 == nullptr || socialNetworkUser2 == nullptr)
+    {
+        throw VertexNullException();
+    }
     m_user1 = socialNetworkUser1;
     m_user2 = socialNetworkUser2;
 }
 
 Friendship::Friendship(std::shared_ptr<Vertex> &&socialNetworkUser1, std::shared_ptr<Vertex> &&socialNetworkUser2)
 {
+    if (socialNetworkUser1 == nullptr || socialNetworkUser2 == nullptr)
+    {
+        throw VertexNullException();
+    }
     m_user1 = std::move(socialNetworkUser1);
     m_user2 = std::move(socialNetworkUser2);
 }
 
-Friendship::Friendship(Vertex *user1, Vertex *user2)
+Friendship::Friendship(Vertex *socialNetworkUser1, Vertex *socialNetworkUser2)
 {
-    m_user1 = std::shared_ptr<Vertex>(user1);
-    m_user2 = std::shared_ptr<Vertex>(user2);
-}
-
-Friendship::Friendship(const SocialNetworkUser& user1, const SocialNetworkUser& user2)
-{
-    m_user1 = std::shared_ptr<Vertex>(const_cast<SocialNetworkUser*>(&user1));
-    m_user2 = std::shared_ptr<Vertex>(const_cast<SocialNetworkUser*>(&user2));
+    if (socialNetworkUser1 == nullptr || socialNetworkUser2 == nullptr)
+    {
+        throw VertexNullException();
+    }
+    m_user1 = std::shared_ptr<Vertex>(socialNetworkUser1);
+    m_user2 = std::shared_ptr<Vertex>(socialNetworkUser2);
 }
 
 void Friendship::setVertex(const Vertex *const vertex, bool position)
