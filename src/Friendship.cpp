@@ -16,15 +16,19 @@ Friendship &Friendship::operator=(Friendship &&friendship) noexcept
 
 std::shared_ptr<Vertex> Friendship::getVertex1()
 {
-    if (m_user1 != nullptr)
+    if (m_user1 == nullptr)
     {
-        return m_user1;
+        throw VertexNullException();
     }
-    throw VertexNullException();
+    return m_user1;
 }
 
 std::shared_ptr<Vertex> Friendship::getVertex2()
 {
+    if (m_user2 == nullptr)
+    {
+        throw VertexNullException();
+    }
     return m_user2;
 }
 

@@ -44,7 +44,7 @@ TEST_F(FriendshipTest, CONSTRUCTOR_TC2)
     // function under test
     Friendship friendship{new SocialNetworkUser(username), new SocialNetworkUser(username1)};
 
-    // expect calls
+    // expectations
     EXPECT_CALL(snuMock, getLabel()).Times(2).WillOnce(Return(username)).WillOnce(Return(username1));
 
     // postconditions
@@ -82,6 +82,7 @@ TEST_F(FriendshipTest, SET_VERTEX_TC2)
     Friendship friendship{};
     std::string username{"User"};
 
+    // expectations
     EXPECT_CALL(snuMock, getLabel()).Times(2).WillRepeatedly(Return(username));
 
     // function under test

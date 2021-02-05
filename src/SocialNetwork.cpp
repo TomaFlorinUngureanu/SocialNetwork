@@ -25,6 +25,12 @@ bool SocialNetwork::addEdge(const std::shared_ptr<Edge> &edge)
         throw VertexNullException();
     }
 
+    if (edge->getVertex1()->getLabel().empty() || edge->getVertex2()->getLabel().empty())
+    {
+        std::cout << "Cannot add an empty or incomplete edge!\n";
+        return false;
+    }
+
     if (*edge->getVertex1() == *edge->getVertex2())
     {
         std::cout << "You cannot be your own friend!\n";
@@ -34,12 +40,6 @@ bool SocialNetwork::addEdge(const std::shared_ptr<Edge> &edge)
     if (isEdgeInGraph(edge))
     {
         std::cout << "You are already friends!\n";
-        return false;
-    }
-
-    if (edge->getVertex1()->getLabel().empty() || edge->getVertex2()->getLabel().empty())
-    {
-        std::cout << "Cannot add an empty or incomplete edge!\n";
         return false;
     }
 
@@ -203,13 +203,13 @@ bool SocialNetwork::removeVertex(const std::shared_ptr<Vertex> &user)
         std::cout << "Vertex not found in the graph!\n";
     }
 
-    while (!m_friendsList[user].empty())
+    auto pred = [&user](const std::shared_ptr<Vertex>& vertex){return *user == *vertex;};
+    auto it = std::find_if(m_users.begin(), m_users.end(), pred);
+
+    while (!m_friendsList[*it].empty())
     {
         removeEdge(std::make_shared<Friendship>(user, m_friendsList[user][0]));
     }
-
-    auto pred = [&user](const std::shared_ptr<Vertex>& vertex){return *user == *vertex;};
-    auto it = std::remove_if(m_users.begin(), m_users.end(), pred);
     m_users.erase(it, m_users.end());
     return true;
 }
@@ -391,8 +391,10 @@ bool SocialNetwork::removeEdge(const Edge* const edge)
 
 bool SocialNetwork::removeVertex(const Vertex *const vertex)
 {
-    std::shared_ptr<Vertex> ptr{std::make_shared<SocialNetworkUser>()};
-    ptr->setLabel(vertex->getLabel());
-    removeVertex(ptr);
-    return true;
+    return removeVertex(std::shared_ptr<Vertex>(const_cast<Vertex*>(vertex)));
+}
+
+std::vector<std::shared_ptr<Edge>> SocialNetwork::getEdges()
+{
+    return m_friendships;
 }

@@ -44,3 +44,8 @@ SocialNetworkUser::SocialNetworkUser(const std::string &username)
         m_username = username;
     }
 }
+
+SocialNetworkUser::SocialNetworkUser(SocialNetworkUser &&socialNetworkUser) noexcept
+{
+
+}

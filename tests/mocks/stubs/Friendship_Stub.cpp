@@ -47,4 +47,18 @@ void Friendship::setVertex(const Vertex *const vertex, bool position)
     }
 }
 
-Friendship::F
+Friendship::Friendship(std::shared_ptr<Vertex> &&user1, std::shared_ptr<Vertex> &&user2)
+{
+
+}
+
+Friendship::Friendship(Vertex *user1, Vertex *user2)
+{
+
+}
+
+Friendship::Friendship(const std::shared_ptr<Vertex> &user1, const std::shared_ptr<Vertex> &user2)
+{
+    m_user1 = user1;
+    m_user2 = user2;
+}

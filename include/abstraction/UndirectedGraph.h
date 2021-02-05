@@ -78,6 +78,7 @@ public:
     virtual bool shortestPath(Vertex *user1, Vertex *user2) = 0;
     virtual std::unordered_map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>, VertexMapHash, VertexMapEq> getAdjList() = 0;
     virtual std::vector<std::shared_ptr<Vertex>> getVertices() = 0;
+    virtual std::vector<std::shared_ptr<Edge>> getEdges() = 0;
     virtual bool removeEdge(const std::shared_ptr<Edge>& edge) = 0;
     virtual bool removeEdge(const Edge* edge) = 0;
     virtual bool removeVertex(const std::shared_ptr<Vertex> &vertex) = 0;

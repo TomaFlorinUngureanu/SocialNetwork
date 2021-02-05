@@ -1,4 +1,5 @@
 // include project classes
+#include <exception/SocialNetworkException.h>
 #include "SocialNetwork.h"
 
 // include mocks
@@ -10,6 +11,9 @@
 #include "gtest/gtest.h"
 
 using ::testing::StrictMock;
+using ::testing::Return;
+using ::testing::InSequence;
+using ::testing::_;
 
 class SocialNetworkTest: public ::testing::Test
 {
@@ -25,11 +29,18 @@ public:
  */
 TEST_F(SocialNetworkTest, ADD_VERTEX_TC_1)
 {
-    // variable declarations and initializations
-    SocialNetwork socialNetwork{};
+    try
+    {
+        // variable declarations and initializations
+        SocialNetwork socialNetwork{};
 
-    // function under test
-    socialNetwork.addVertex(nullptr);
+        // function under test
+        socialNetwork.addVertex(nullptr);
+    }
+    catch (const VertexNullException& exception)
+    {
+        EXPECT_STREQ(exception.what(), "Vertex is null!");
+    }
 }
 
 /**
@@ -40,6 +51,9 @@ TEST_F(SocialNetworkTest, ADD_VERTEX_TC_2)
 {
     // variable declarations and initializations
     SocialNetwork socialNetwork{};
+
+    // expectations
+    EXPECT_CALL(snuMock, getLabel()).WillOnce(Return(genericUsername));
 
     // function under test
     socialNetwork.addVertex(new SocialNetworkUser(genericUsername));
@@ -53,6 +67,9 @@ TEST_F(SocialNetworkTest, ADD_VERTEX_TC_3)
 {
     SocialNetwork socialNetwork{};
     std::shared_ptr<Vertex> vertex{new SocialNetworkUser(genericUsername)};
+
+    // expectations
+    EXPECT_CALL(snuMock, getLabel()).WillOnce(Return(genericUsername));
 
     // function under test
     socialNetwork.addVertex(vertex);
@@ -69,12 +86,18 @@ TEST_F(SocialNetworkTest, ADD_VERTEX_TC_4)
     SocialNetwork socialNetwork{};
     std::shared_ptr<Vertex> vertex{new SocialNetworkUser(genericUsername)};
     SocialNetworkUser user{genericUsername};
-    
+
+    // expectations
+    EXPECT_CALL(snuMock, getLabel()).Times(3).WillRepeatedly(Return(genericUsername));
+
     // prerequisites
     socialNetwork.addVertex(vertex);
+    unsigned int numberOfVertices = socialNetwork.getVertices().size();
     
     // function under test
     socialNetwork.addVertex(&user);
+
+    EXPECT_EQ(socialNetwork.getVertices().size(), numberOfVertices);
 }
 
 /**
@@ -83,11 +106,18 @@ TEST_F(SocialNetworkTest, ADD_VERTEX_TC_4)
  */
 TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_1)
 {
-    // variable declarations and initializations
-    SocialNetwork socialNetwork{};
+    try
+    {
+        // variable declarations and initializations
+        SocialNetwork socialNetwork{};
 
-    // function under test
-    socialNetwork.removeVertex(nullptr);
+        // function under test
+        socialNetwork.removeVertex(nullptr);
+    }
+    catch (const VertexNullException& exception)
+    {
+        EXPECT_STREQ(exception.what(), "Vertex is null!");
+    }
 }
 
 /**
@@ -100,11 +130,19 @@ TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_2)
     SocialNetwork socialNetwork{};
     std::shared_ptr<Vertex> vertex{new SocialNetworkUser(genericUsername)};
 
+    // expectations
+    EXPECT_CALL(snuMock, getLabel()).Times(8).WillRepeatedly(Return(genericUsername));
+
+    InSequence seq;
     // prerequisites
     socialNetwork.addVertex(vertex);
+    unsigned int numberOfVertices = socialNetwork.getVertices().size();
 
     // function under test
     socialNetwork.removeVertex(new SocialNetworkUser(genericUsername));
+
+    // postconditions
+    EXPECT_EQ(socialNetwork.getVertices().size(), numberOfVertices - 1);
 }
 
 /**
@@ -117,11 +155,19 @@ TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_3)
     SocialNetwork socialNetwork{};
     std::shared_ptr<Vertex> vertex{new SocialNetworkUser(genericUsername)};
 
+    // expectations
+    EXPECT_CALL(snuMock, getLabel()).Times(8).WillRepeatedly(Return(genericUsername));
+
+    InSequence seq;
     // prerequisites
     socialNetwork.addVertex(vertex);
+    unsigned int numberOfVertices = socialNetwork.getVertices().size();
     
     // function under test
     socialNetwork.removeVertex(std::shared_ptr<Vertex>(new SocialNetworkUser(genericUsername)));
+
+    // postconditions
+    EXPECT_EQ(socialNetwork.getVertices().size(), numberOfVertices - 1);
 }
 
 /**
@@ -133,15 +179,22 @@ TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_5)
 {
     // variable declarations and initializations
     SocialNetwork socialNetwork{};
-    SocialNetworkUser user{genericUsername};
-    std::shared_ptr<Vertex> vertex{&user};
-    
+    std::shared_ptr<Vertex> vertex{new SocialNetworkUser(genericUsername)};
+
+    InSequence seq;
+    // expectations
+    EXPECT_CALL(snuMock, getLabel()).Times(11).WillRepeatedly(Return(genericUsername));
+
     // prerequisites
     socialNetwork.addVertex(vertex);
+    unsigned int numberOfVertices = socialNetwork.getVertices().size();
     socialNetwork.removeVertex(std::shared_ptr<Vertex>(new SocialNetworkUser(genericUsername)));
     
     // function under test
     socialNetwork.removeVertex(std::shared_ptr<Vertex>(new SocialNetworkUser(genericUsername)));
+
+    // postconditions
+    EXPECT_EQ(socialNetwork.getVertices().size(), numberOfVertices - 1);
 }
 
 /**
@@ -154,18 +207,35 @@ TEST_F(SocialNetworkTest, REMOVE_VERTEX_TC_6)
 {
     // variable declarations and initializations
     SocialNetwork socialNetwork;
-    std::shared_ptr<Vertex>v1 = std::make_shared<SocialNetworkUser>(SocialNetworkUser("User"));
-    std::shared_ptr<Vertex>v2 = std::make_shared<SocialNetworkUser>(SocialNetworkUser("User1"));
-    std::shared_ptr<Vertex>v3 = std::make_shared<SocialNetworkUser>(SocialNetworkUser("User2"));
-    
-    // prerequisites
+    std::string username{"User"};
+    std::string username1{"User1"};
+    std::shared_ptr<Vertex> v1{new SocialNetworkUser(username)};
+    std::shared_ptr<Vertex>v2{new SocialNetworkUser(username1)};
+
+    // expectations
+    EXPECT_CALL(snuMock, getLabel()).Times(4)
+    .WillOnce(Return(username))
+    .WillOnce(Return(username1))
+    .WillOnce(Return(username))
+    .WillOnce(Return(username1));
     socialNetwork.addVertex(v1);
     socialNetwork.addVertex(v2);
+
+    EXPECT_CALL(frMock, getVertex1()).WillRepeatedly(Return(v1));
+    EXPECT_CALL(frMock, getVertex2()).WillRepeatedly(Return(v2));
+    EXPECT_CALL(snuMock, getLabel()).WillRepeatedly(Return(username));
+    EXPECT_CALL(snuMock, getLabel()).WillRepeatedly(Return(username1));
+
+    unsigned int numberOfVertices = socialNetwork.getVertices().size();
     socialNetwork.addEdge(v1, v2);
+    unsigned int numberOfEdges = socialNetwork.getEdges().size();
 
     // function under test
     socialNetwork.removeVertex(v1);
 
+    // postconditions
+    EXPECT_EQ(socialNetwork.getVertices().size(), numberOfVertices - 1);
+    EXPECT_EQ(socialNetwork.getEdges().size(), numberOfEdges - 1);
 }
 
 /**

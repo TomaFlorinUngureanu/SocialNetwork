@@ -40,7 +40,7 @@ public:
     SocialNetwork &operator=(SocialNetwork &&socialNetwork) noexcept;
     SocialNetwork &operator=(const SocialNetwork &socialNetwork) = default;
 
-    bool removeVertex(const Vertex *const vertex) override;
+    bool removeVertex(const Vertex *vertex) override;
 
     bool addVertex(Vertex *user) override;
     bool addVertex(const SocialNetworkUser& user);
@@ -71,6 +71,7 @@ public:
     std::unordered_map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>, VertexMapHash, VertexMapEq>
     getAdjList() override;
     std::vector<std::shared_ptr<Vertex>> getVertices() override;
+    std::vector<std::shared_ptr<Edge>> getEdges() override;
     bool removeEdge(const std::shared_ptr<Edge> &edge) override;
     bool removeVertex(const std::shared_ptr<Vertex> &vertex) override;
     void printFriendList() override;

@@ -1,34 +1,31 @@
-#ifndef SOCIALNETWORKEXCEPTION_H
-#define SOCIALNETWORKEXCEPTION_H
+#ifndef SOCIAL_NETWORK_EXCEPTION_H
+#define SOCIAL_NETWORK_EXCEPTION_H
 
 #include <exception>
 
 class EdgeToSelfException : public std::exception
 {
 public:
-    [[nodiscard]] const char *what() const noexcept override
-    {
-        return "Cannot create edge to self!";
-    }
+    [[nodiscard]] const char *what() const noexcept override;
 };
 
 class VertexNullException: public std::exception
 {
 public:
-    [[nodiscard]] const char *what() const noexcept override
-    {
-        return "Vertex is null!";
-    }
+    [[nodiscard]] const char *what() const noexcept override;
 };
 
 class EdgeNullException: public std::exception
 {
 public:
-    [[nodiscard]] const char *what() const noexcept override
-    {
-        return "Edge is null!";
-    }
+    [[nodiscard]] const char *what() const noexcept override;
+};
+
+class UndirectedGraphException: public std::exception
+{
+public :
+    [[nodiscard]] const char *what() const noexcept override;
 };
 
 
-#endif //SOCIALNETWORKEXCEPTION_H
+#endif //SOCIAL_NETWORK_EXCEPTION_H
