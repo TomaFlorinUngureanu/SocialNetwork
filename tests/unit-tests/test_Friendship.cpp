@@ -1,23 +1,26 @@
 // include project classes
-#include "SocialNetworkUser.h"
 #include "Friendship.h"
 
 // include mocks
-#include "MockFriendship.h"
+#include "MockSocialNetworkUser.h"
 
 using ::testing::StrictMock;
+using ::testing::Return;
 
 class FriendshipTest: public testing::Test
 {
 public:
-    StrictMock<MockFriendship> friendshipMock;
+    StrictMock<MockSocialNetworkUser> snuMock;
 };
 
 TEST_F(FriendshipTest, TC_1)
 {
     Friendship friendship{};
-    Vertex *vertex = new SocialNetworkUser("");
 
-    EXPECT_CALL(friendshipMock, setVertex(vertex, false));
-    friendship.setVertex(vertex, false);
+    std::string username{"User"};
+    EXPECT_CALL(snuMock, getUsername()).Times(2).WillRepeatedly(Return(username));
+    friendship.setVertex(new SocialNetworkUser(username), false);
+    EXPECT_EQ(friendship.getVertex1()->getUsername(), username);
 }
+
+

@@ -84,5 +84,5 @@ Friendship::Friendship(const SocialNetworkUser& user1, const SocialNetworkUser& 
 
 void Friendship::setVertex(const Vertex *const vertex, bool position)
 {
-    setVertex(std::shared_ptr<Vertex>(vertex), position);
+    setVertex(std::shared_ptr<Vertex>(const_cast<Vertex*>(vertex)), position);
 }

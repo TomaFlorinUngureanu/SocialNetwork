@@ -22,9 +22,9 @@ set(PROJECT_SOURCES ../src/abstraction/Vertex.cpp
                     ../src/SocialNetwork.cpp)
 
 add_executable( FriendshipTests
-                ../src/SocialNetworkUser.cpp
+                ../src/Friendship.cpp
                 ../src/abstraction/Edge.cpp
-                mocks/stubs/Friendship_Stub.cpp
+                mocks/stubs/SocialNetworkUser_Stub.cpp
                 mocks/stubs/Vertex_Stub.cpp
                 unit-tests/test_Friendship.cpp
                 )
